@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="gleniganApp">
+<head>
+  <base href="/">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Glenigan — Browse UK construction projects filtered by area and name"
+  />
+  <title>Glenigan — Construction Projects</title>
+
+  <!-- AngularJS 1.8.x via CDN (pinned version) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <site-header></site-header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main-content">
+
+    <div ng-view></div>
+
+  </main>
+
+  <site-footer></site-footer>
+
+  <!-- Compiled TypeScript bundle (must load after AngularJS) -->
+  <script src="app.js"></script>
+</body>
+</html>

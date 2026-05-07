@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "none",
+    "lib": ["ES6", "DOM"],
+    "strict": false,
+    "outFile": "dist/app.js",
+    "sourceMap": true,
+    "declaration": false,
+    "noImplicitAny": false,
+    "allowJs": false,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["angular"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

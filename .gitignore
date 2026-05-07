@@ -1,0 +1,50 @@
+# ── Environment ──────────────────────────────────────────────────────────────
+.env
+!.env.example
+
+# ── Database / data files ─────────────────────────────────────────────────────
+*.sql
+*.db
+*.sqlite
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg
+*.egg-info/
+.venv/
+venv/
+env/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# ── Node / Frontend ───────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+
+# Compiled TypeScript output — regenerate with: cd frontend && npx tsc
+frontend/dist/app.js
+frontend/dist/app.js.map
+
+# ── OS / Editor ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+README-focus.md

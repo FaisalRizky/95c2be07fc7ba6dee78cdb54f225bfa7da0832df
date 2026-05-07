@@ -1,0 +1,28 @@
+# ============================================================
+# Dev hot-reload override — automatically merged by Docker Compose.
+#
+# Run:  docker compose up -d
+#
+# Backend : save any .py file → uvicorn restarts (~1 s)
+# Frontend: run `npm run build:watch` in a terminal → nginx
+#           serves the new JS within seconds, no restart needed.
+# ============================================================
+
+services:
+  backend:
+    volumes:
+      - ./backend:/app
+      - ./glenigan.sql:/glenigan.sql
+    # Use sh -c so $BACKEND_PORT is expanded at runtime (same pattern as the Dockerfile CMD).
+    command: ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${BACKEND_PORT:-8000} --reload"]
+
+  frontend:
+    # Replace the multi-stage production build with a plain nginx image.
+    build: !reset null
+    image: nginx:stable-alpine
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+      # Mount as a template so the nginx entrypoint runs envsubst on it.
+      - ./frontend/nginx.conf:/etc/nginx/templates/default.conf.template
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT:-8000}

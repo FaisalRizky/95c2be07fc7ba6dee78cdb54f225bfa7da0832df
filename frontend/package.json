@@ -1,0 +1,24 @@
+{
+  "name": "glenigan-frontend",
+  "version": "1.0.0",
+  "description": "Glenigan take-home — AngularJS 1.8.x + TypeScript frontend",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "watch": "tsc --watch",
+    "serve": "npx http-server dist -p 4200 --cors -c-1",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/angular": "^1.8.9",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
+    "http-server": "^14.1.1",
+    "prettier": "^3.8.3",
+    "typescript": "^5.4.5"
+  }
+}

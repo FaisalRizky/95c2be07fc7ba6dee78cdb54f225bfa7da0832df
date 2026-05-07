@@ -1,0 +1,65 @@
+# ============================================================
+# Glenigan Construction Projects — Docker Compose
+#
+# Port configuration lives in .env (copy .env.example → .env).
+# All three port variables flow all the way into the containers:
+#
+#   BACKEND_PORT  → uvicorn --port, nginx proxy_pass, host:container mapping
+#   FRONTEND_PORT → host port only (nginx always listens on 80 internally)
+#   ES_PORT       → host port only (ES always listens on 9200 internally)
+#
+# Usage:
+#   docker compose up -d          # production-like, static build
+#   docker compose up -d          # dev: auto-merges docker-compose.override.yml
+# ============================================================
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: glenigan-backend
+    ports:
+      # Both sides use BACKEND_PORT so the container port matches uvicorn's --port.
+      - "${BACKEND_PORT:-8000}:${BACKEND_PORT:-8000}"
+    volumes:
+      - ./glenigan.sql:/glenigan.sql
+    environment:
+      - DB_ENGINE=sqlite
+      - SQLITE_DB_PATH=/glenigan.sql
+      - ES_HOST=http://elasticsearch:9200
+      - ES_INDEX=glenigan_projects
+      # Passed to the sh -c CMD in the Dockerfile so uvicorn binds the right port.
+      - BACKEND_PORT=${BACKEND_PORT:-8000}
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: glenigan-frontend
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    environment:
+      # Passed to envsubst inside the nginx container so proxy_pass uses the right port.
+      - BACKEND_PORT=${BACKEND_PORT:-8000}
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: glenigan-es
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "${ES_PORT:-9200}:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped

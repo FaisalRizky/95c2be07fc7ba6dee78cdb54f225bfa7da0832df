@@ -1,0 +1,25 @@
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP"]
+ignore = [
+    "N999",   # Module name convention (main.py is fine)
+    "UP007",  # Use X | Y for type unions (Python 3.10+ only syntax in annotations)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["config", "routers", "services", "utils"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+markers = [
+    "unit: fast tests with mocked dependencies (no database required)",
+    "integration: tests that require glenigan.sql at the repo root",
+]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_ignores = true

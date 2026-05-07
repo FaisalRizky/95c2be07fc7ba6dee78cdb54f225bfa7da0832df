@@ -1,0 +1,244 @@
+    <!-- ===== FILTER BAR ===== -->
+    <form class="filter-bar" ng-submit="$ctrl.search()" aria-label="Search and filter controls">
+      <div class="filter-group">
+        <label for="search-input" class="filter-label">Search by name, description</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <input
+            id="search-input"
+            type="text"
+            class="filter-input"
+            placeholder="e.g. Manchester Bridge…"
+            ng-model="$ctrl.filters.keyword"
+            aria-label="Search projects by name"
+            autocomplete="off"
+          />
+          <button
+            type="button"
+            class="clear-btn"
+            ng-show="$ctrl.filters.keyword"
+            ng-click="$ctrl.filters.keyword = ''"
+            aria-label="Clear search"
+          >&times;</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="area-select" class="filter-label">Area</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M10 2C7.24 2 5 4.24 5 7c0 4.25 5 11 5 11s5-6.75 5-11c0-2.76-2.24-5-5-5z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+            <circle cx="10" cy="7" r="2" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+          <select
+            id="area-select"
+            class="filter-select"
+            ng-model="$ctrl.filters.area"
+            aria-label="Filter by area"
+          >
+            <option value="">All areas</option>
+            <option ng-repeat="a in $ctrl.areas" value="{{a}}">{{a}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="company-select" class="filter-label">Company</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <rect x="3" y="7" width="14" height="11" rx="1" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M7 7V5a3 3 0 116 0v2" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+          <select
+            id="company-select"
+            class="filter-select"
+            ng-model="$ctrl.filters.company"
+            aria-label="Filter by company"
+          >
+            <option value="">All companies</option>
+            <option ng-repeat="c in $ctrl.companies" value="{{c}}">{{c}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="limit-select" class="filter-label">Per Page</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M4 6h12M4 10h12M4 14h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <select
+            id="limit-select"
+            class="filter-select"
+            ng-model="$ctrl.perPage"
+            ng-options="opt.value as opt.label for opt in $ctrl.perPageOptions"
+            aria-label="Items per page"
+          >
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-actions" style="display: flex; gap: 8px; align-items: flex-end;">
+        <button type="submit" class="btn btn-primary" style="background-color: #0057FF; color: white;">
+          Search
+        </button>
+        <button
+          type="button"
+          id="clear-filters-btn"
+          class="btn btn-ghost"
+          ng-click="$ctrl.clearFilters()"
+          ng-disabled="!$ctrl.filters.area && !$ctrl.filters.keyword && !$ctrl.filters.company"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+
+    <!-- ===== RESULTS SUMMARY ===== -->
+    <div class="results-summary" ng-if="!$ctrl.loading && !$ctrl.error">
+      <span ng-if="$ctrl.pagination">
+        Showing
+        <strong>{{($ctrl.pagination.page - 1) * $ctrl.pagination.per_page + 1}}–{{[$ctrl.pagination.page * $ctrl.pagination.per_page, $ctrl.pagination.total] | limitTo:1}}</strong>
+        of <strong>{{$ctrl.pagination.total | number}}</strong> projects
+      </span>
+      <span ng-if="!$ctrl.pagination && $ctrl.projects.length">
+        <strong>{{$ctrl.projects.length | number}}</strong> projects
+      </span>
+    </div>
+
+    <!-- ===== LOADING SPINNER ===== -->
+    <div class="spinner-wrap" ng-if="$ctrl.loading" aria-live="polite" aria-label="Loading projects">
+      <div class="spinner"></div>
+      <p class="spinner-label">Loading projects…</p>
+    </div>
+
+    <!-- ===== ERROR STATE ===== -->
+    <div class="alert alert-error" ng-if="$ctrl.error && !$ctrl.loading" role="alert">
+      <svg viewBox="0 0 20 20" fill="none" class="alert-icon" aria-hidden="true">
+        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M10 6v5M10 14h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span>{{$ctrl.error}}</span>
+    </div>
+
+    <!-- ===== EMPTY STATE ===== -->
+    <div class="empty-state" ng-if="!$ctrl.loading && !$ctrl.error && $ctrl.projects.length === 0">
+      <svg viewBox="0 0 64 64" fill="none" class="empty-icon" aria-hidden="true">
+        <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+        <path d="M22 32h20M32 22v20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+      </svg>
+      <p>No projects match your filters.</p>
+      <button class="btn btn-outline" ng-click="$ctrl.clearFilters()">Clear filters</button>
+    </div>
+
+    <!-- ===== PROJECT TABLE ===== -->
+    <div class="table-wrap" ng-if="!$ctrl.loading && !$ctrl.error && $ctrl.projects.length > 0">
+      <table class="projects-table" aria-label="Construction projects">
+        <thead>
+          <tr>
+            <th scope="col" class="sortable" ng-click="$ctrl.toggleSort('project_id')" aria-sort="{{$ctrl.sort_by === 'project_id' ? ($ctrl.order === 'asc' ? 'ascending' : 'descending') : 'none'}}">
+              ID <span class="sort-icon" ng-show="$ctrl.sort_by === 'project_id'">{{$ctrl.order === 'asc' ? '▲' : '▼'}}</span>
+            </th>
+            <th scope="col" class="sortable" ng-click="$ctrl.toggleSort('project_name')" aria-sort="{{$ctrl.sort_by === 'project_name' ? ($ctrl.order === 'asc' ? 'ascending' : 'descending') : 'none'}}">
+              Project Name <span class="sort-icon" ng-show="$ctrl.sort_by === 'project_name'">{{$ctrl.order === 'asc' ? '▲' : '▼'}}</span>
+            </th>
+            <th scope="col" class="sortable" ng-click="$ctrl.toggleSort('company')" aria-sort="{{$ctrl.sort_by === 'company' ? ($ctrl.order === 'asc' ? 'ascending' : 'descending') : 'none'}}">
+              Company <span class="sort-icon" ng-show="$ctrl.sort_by === 'company'">{{$ctrl.order === 'asc' ? '▲' : '▼'}}</span>
+            </th>
+            <th scope="col" class="sortable" ng-click="$ctrl.toggleSort('area')" aria-sort="{{$ctrl.sort_by === 'area' ? ($ctrl.order === 'asc' ? 'ascending' : 'descending') : 'none'}}">
+              Area <span class="sort-icon" ng-show="$ctrl.sort_by === 'area'">{{$ctrl.order === 'asc' ? '▲' : '▼'}}</span>
+            </th>
+            <th scope="col" class="sortable" ng-click="$ctrl.toggleSort('project_start')" aria-sort="{{$ctrl.sort_by === 'project_start' ? ($ctrl.order === 'asc' ? 'ascending' : 'descending') : 'none'}}">
+              Start <span class="sort-icon" ng-show="$ctrl.sort_by === 'project_start'">{{$ctrl.order === 'asc' ? '▲' : '▼'}}</span>
+            </th>
+            <th scope="col" class="sortable" ng-click="$ctrl.toggleSort('project_end')" aria-sort="{{$ctrl.sort_by === 'project_end' ? ($ctrl.order === 'asc' ? 'ascending' : 'descending') : 'none'}}">
+              End <span class="sort-icon" ng-show="$ctrl.sort_by === 'project_end'">{{$ctrl.order === 'asc' ? '▲' : '▼'}}</span>
+            </th>
+            <th scope="col" class="sortable text-right" ng-click="$ctrl.toggleSort('project_value')" aria-sort="{{$ctrl.sort_by === 'project_value' ? ($ctrl.order === 'asc' ? 'ascending' : 'descending') : 'none'}}">
+              Value (GBP) <span class="sort-icon" ng-show="$ctrl.sort_by === 'project_value'">{{$ctrl.order === 'asc' ? '▲' : '▼'}}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            ng-repeat="project in $ctrl.projects track by $index"
+            class="project-row"
+            ng-class="{'row-even': $index % 2 === 0}"
+          >
+            <td class="col-id">
+              <span style="font-family: monospace; color: #666;">#{{project.project_id}}</span>
+            </td>
+            <td class="col-name">
+              <span class="project-name">{{project.project_name}}</span>
+              <span class="project-desc" ng-if="project.description">{{project.description}}</span>
+            </td>
+            <td class="col-company">
+              <span class="company-badge">{{project.company}}</span>
+            </td>
+            <td class="col-area">
+              <span class="area-pill">{{project.area}}</span>
+            </td>
+            <td class="col-date">{{project.project_start | date:'d MMM yyyy'}}</td>
+            <td class="col-date">{{project.project_end | date:'d MMM yyyy'}}</td>
+            <td class="col-value text-right">
+              <span class="value-badge">{{project.project_value | formatCurrency}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===== PAGINATION ===== -->
+    <nav class="pagination-nav" ng-if="$ctrl.pagination && $ctrl.pagination.total_pages > 1" aria-label="Pagination">
+      <button
+        class="page-btn"
+        ng-disabled="!$ctrl.hasPrevPage()"
+        ng-click="$ctrl.goToPage($ctrl.currentPage - 1)"
+        aria-label="Previous page"
+      >
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L6 8l4 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <button
+        ng-if="$ctrl.pagination.total_pages > 5 && $ctrl.pageRange()[0] > 1"
+        class="page-btn"
+        ng-click="$ctrl.goToPage(1)"
+        aria-label="Page 1"
+      >1</button>
+      <span
+        ng-if="$ctrl.pagination.total_pages > 5 && $ctrl.pageRange()[0] > 2"
+        class="page-ellipsis"
+      >…</span>
+
+      <button
+        ng-repeat="p in $ctrl.pageRange() track by p"
+        class="page-btn"
+        ng-class="{'page-btn--active': p === $ctrl.currentPage}"
+        ng-click="$ctrl.goToPage(p)"
+        aria-label="Page {{p}}"
+        aria-current="{{p === $ctrl.currentPage ? 'page' : false}}"
+      >{{p}}</button>
+
+      <span
+        ng-if="$ctrl.pagination.total_pages > 5 && $ctrl.pageRange()[$ctrl.pageRange().length - 1] < $ctrl.pagination.total_pages - 1"
+        class="page-ellipsis"
+      >…</span>
+      <button
+        ng-if="$ctrl.pagination.total_pages > 5 && $ctrl.pageRange()[$ctrl.pageRange().length - 1] < $ctrl.pagination.total_pages"
+        class="page-btn"
+        ng-click="$ctrl.goToPage($ctrl.pagination.total_pages)"
+        aria-label="Page {{$ctrl.pagination.total_pages}}"
+      >{{$ctrl.pagination.total_pages}}</button>
+
+      <button
+        class="page-btn"
+        ng-disabled="!$ctrl.hasNextPage()"
+        ng-click="$ctrl.goToPage($ctrl.currentPage + 1)"
+        aria-label="Next page"
+      >
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l4 5-4 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </nav>

@@ -1,0 +1,33 @@
+<div class="not-found-page" aria-labelledby="nf-heading">
+
+  <!-- Animated background grid -->
+  <div class="nf-grid" aria-hidden="true"></div>
+
+  <!-- Glowing orb -->
+  <div class="nf-orb" aria-hidden="true"></div>
+
+  <div class="nf-content">
+    <!-- Giant 404 -->
+    <p class="nf-code" aria-hidden="true">404</p>
+
+    <div class="nf-icon-wrap" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" class="nf-icon">
+        <circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="2"/>
+        <path d="M20 20l24 24M44 20L20 44" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <h1 id="nf-heading" class="nf-title">Page Not Found</h1>
+    <p class="nf-description">
+      The route you are looking for doesn't exist, has been moved, or was never here.<br/>
+      This is expected when hard-refreshing a sub-route on a local static server.
+    </p>
+
+    <a href="/" class="btn btn-primary nf-btn" id="nf-home-btn">
+      <svg viewBox="0 0 20 20" fill="none" width="16" height="16" aria-hidden="true">
+        <path d="M3 9.5L10 3l7 6.5M5 8v9h4v-5h2v5h4V8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Dashboard
+    </a>
+  </div>
+</div>
