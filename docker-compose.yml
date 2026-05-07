@@ -9,14 +9,14 @@
 #   ES_PORT       → host port only (ES always listens on 9200 internally)
 #
 # Usage:
-#   docker compose up -d          # production-like, static build
-#   docker compose up -d          # dev: auto-merges docker-compose.override.yml
+#   docker compose up -d          # always builds fresh images, then starts all services
 # ============================================================
 
 services:
   backend:
     build:
       context: ./backend
+    pull_policy: build
     container_name: glenigan-backend
     ports:
       # Both sides use BACKEND_PORT so the container port matches uvicorn's --port.
@@ -38,6 +38,7 @@ services:
   frontend:
     build:
       context: ./frontend
+    pull_policy: build
     container_name: glenigan-frontend
     ports:
       - "${FRONTEND_PORT:-4200}:80"

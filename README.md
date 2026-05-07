@@ -323,11 +323,24 @@ Every filter change (area, keyword, company, page, sort) is written to the URL v
 - [Docker Compose](https://docs.docker.com/compose/install/) v2.22+
 - The `glenigan.sql` database file placed at the **repository root** (see assumption 23)
 
-### Run
+### Run (Docker — recommended)
+
+Before starting Docker, compile the frontend bundle once:
+
+```bash
+cd frontend
+npm install
+npm run build   # generates dist/app.js
+cd ..
+```
+
+Then start all services:
 
 ```bash
 docker compose up -d
 ```
+
+> The backend expects `glenigan.sql` at the repository root and Elasticsearch running on `http://localhost:9200`. If Elasticsearch is unavailable it falls back to SQLite automatically.
 
 ### Open the app
 
